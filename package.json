@@ -9,7 +9,10 @@
     "demo": "SOLANA_NETWORK=localnet ts-node scripts/deploy-and-demo.ts",
     "demo:devnet": "SOLANA_NETWORK=devnet ts-node scripts/deploy-and-demo.ts",
     "clean": "anchor clean",
-    "keys": "anchor keys list"
+    "keys": "anchor keys list",
+    "web:dev": "npm --prefix web run dev",
+    "web:build": "npm --prefix web run build",
+    "web:start": "npm --prefix web run start"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.31.1"

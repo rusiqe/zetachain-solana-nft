@@ -1,0 +1,2 @@
+import idl from '../../target/idl/universal_nft.json'
+export default idl as any

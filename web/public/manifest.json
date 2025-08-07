@@ -1,0 +1,9 @@
+{
+  "name": "Universal NFT Web",
+  "short_name": "UNFT",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/"
+}
+
