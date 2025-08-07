@@ -8,13 +8,16 @@
     "start": "next start -p 3009"
   },
   "dependencies": {
-    "next": "14.2.5",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "@solana/web3.js": "^1.95.3",
     "@coral-xyz/anchor": "^0.31.1",
     "@solana/wallet-adapter-react": "^0.15.35",
+    "@solana/wallet-adapter-react-ui": "^0.9.35",
     "@solana/wallet-adapter-wallets": "^0.19.34",
-    "@solana/wallet-adapter-react-ui": "^0.9.35"
+    "@solana/web3.js": "^1.95.3",
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.9"
   }
 }
