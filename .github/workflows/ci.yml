@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    env:
+      CARGO_TERM_COLOR: always
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            programs/universal-nft/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install Solana CLI
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/stable/install)" 
+          echo "${HOME}/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+          solana --version
+
+      - name: Install Anchor
+        run: |
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
+          avm install latest
+          avm use latest
+          anchor --version
+
+      - name: Yarn install
+        working-directory: ./
+        run: yarn install --frozen-lockfile || yarn install
+
+      - name: Rust format check
+        working-directory: ./programs/universal-nft
+        run: cargo fmt -- --check
+
+      - name: Clippy lints
+        working-directory: ./programs/universal-nft
+        run: cargo clippy -- -D warnings
+
+      - name: Build Anchor program
+        run: anchor build
+
+      - name: Run tests (local validator)
+        run: anchor test --skip-deploy
+

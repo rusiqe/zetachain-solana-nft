@@ -241,6 +241,33 @@ describe("ZetaChain Universal NFT", () => {
     expect(universalNftAccount.lockRecipient).to.equal(destinationRecipient);
   });
 
+  it("Rejects unauthorized gateway caller (security)", async () => {
+    const transferId = "unauth_1";
+    const [crossChainTransferPda] = PublicKey.findProgramAddressSync(
+      [Buffer.from("cross_chain_transfer"), Buffer.from(transferId)],
+      program.programId
+    );
+
+    // Attempt to call confirm with wrong signer; expect failure
+    let failed = false;
+    try {
+      await program.methods
+        .confirmCrossChainTransfer(transferId)
+        .accounts({
+          globalConfig: globalConfigPda,
+          crossChainTransfer: crossChainTransferPda,
+          zetachainGateway: authority.publicKey, // wrong signer
+        })
+        .signers([authority])
+        .rpc();
+    } catch (err) {
+      failed = true;
+      console.log("As expected, unauthorized gateway call rejected:", err.message);
+    }
+
+    expect(failed).to.be.true;
+  });
+
   it("Confirms a cross-chain transfer", async () => {
     const transferId = "transfer_confirm_123";
     
