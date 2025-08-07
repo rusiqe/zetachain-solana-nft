@@ -21,11 +21,19 @@ A Solana program that enables universal NFT functionality with robust cross-chai
 
 ### Key Instructions
 
+**Core NFT Operations:**
 - `initialize()`: Set up global program configuration
 - `mint_nft()`: Create universal NFTs with cross-chain metadata
+
+**Manual Transfer Pattern:**
 - `initiate_cross_chain_transfer()`: Start cross-chain transfer process
 - `confirm_cross_chain_transfer()`: Gateway confirmation of transfer
 - `complete_cross_chain_transfer()`: Finalize transfer by burning source NFT
+
+**ZetaChain Gateway Integration Pattern:**
+- `on_call()`: Receive cross-chain NFT transfers via gateway callbacks
+- `on_revert()`: Handle failed cross-chain transfers with automatic unlock
+- `deposit_and_call()`: Initiate cross-chain transfers via direct gateway CPI
 
 ## 🔧 Technical Specifications
 
@@ -226,30 +234,103 @@ await program.methods
 - **Gateway Authentication**: Only authorized ZetaChain gateway can confirm transfers
 - **Ownership Verification**: Strict ownership checks before allowing transfers
 
-## 🌉 Cross-Chain Integration
+## 🌉 ZetaChain Gateway Integration
+
+### Integration Patterns
+
+This program supports **two integration patterns** for maximum flexibility:
+
+#### 1. **Manual Transfer Pattern** (Direct Control)
+Best for applications that need fine-grained control over the transfer process:
+
+```typescript
+// 1. Initiate transfer
+await program.methods.initiateCrossChainTransfer(...)
+// 2. Gateway confirms (external)
+// 3. Complete transfer  
+await program.methods.completeCrossChainTransfer(...)
+```
+
+#### 2. **Gateway Callback Pattern** (Full ZetaChain Integration)
+Best for seamless integration with ZetaChain's protocol contracts:
+
+```typescript
+// Outgoing: Send NFT to another chain
+await program.methods.depositAndCall(
+  ctx,
+  transferId,
+  destinationChainId, // e.g., 1 for Ethereum
+  destinationRecipient, // [u8; 20] Ethereum address
+  revertOptions,
+  bump
+);
+
+// Incoming: Receive NFT from another chain (called by gateway)
+await program.methods.onCall(
+  ctx,
+  amount,
+  sender, // [u8; 20] source chain address
+  data, // NFT metadata: "chain:ethereum,token_id:123,uri:https://..."
+  bump
+);
+
+// Revert: Handle failed transfers (called by gateway)
+await program.methods.onRevert(
+  ctx,
+  amount,
+  sender,
+  data, // Error reason
+  transferId
+);
+```
+
+### Gateway Security
+
+**Caller Validation:**
+```rust
+// Validate that only the configured gateway can call these functions
+let current_ix = get_instruction_relative(0, &instruction_sysvar_account)?;
+require!(
+    current_ix.program_id == global_config.zetachain_gateway,
+    ErrorCode::Unauthorized
+);
+```
+
+**Cross-Chain Message Format:**
+```rust
+// Structured NFT data format for cross-chain transfers
+"chain:ethereum,token_id:123,uri:https://metadata.com/1.json,name:MyNFT,symbol:MNFT"
+```
 
 ### Supported Chains
 
 - **Ethereum** (Chain ID: 1)
-- **Polygon** (Chain ID: 137)
+- **Polygon** (Chain ID: 137) 
 - **BSC** (Chain ID: 56)
 - **ZetaChain** (Chain ID: 7000)
+- **Solana** (Chain ID: 900)
 
-### Message Format
+### Cross-Chain Workflow
 
-Cross-chain messages emitted for ZetaChain protocol integration:
+#### **Sending NFT from Solana:**
+1. User calls `deposit_and_call()`
+2. Program burns local NFT
+3. Program calls gateway with NFT metadata
+4. Gateway routes to destination chain
+5. Destination chain mints equivalent NFT
 
-```rust
-msg!(
-    "CrossChainTransferInitiated: transfer_id={}, mint={}, destination_chain={}, recipient={}, original_chain={}, original_token_id={}",
-    transfer_id,
-    nft_mint,
-    destination_chain,
-    destination_recipient,
-    original_chain,
-    original_token_id
-);
-```
+#### **Receiving NFT to Solana:**
+1. Source chain burns/locks NFT
+2. ZetaChain gateway calls our `on_call()`
+3. Program validates gateway caller
+4. Program parses NFT metadata
+5. Program mints new NFT to recipient
+
+#### **Failed Transfer Handling:**
+1. Destination chain rejects transfer
+2. ZetaChain gateway calls our `on_revert()`
+3. Program unlocks NFT (if locked)
+4. Program updates transfer status to Failed
 
 ## 🧪 Testing
 

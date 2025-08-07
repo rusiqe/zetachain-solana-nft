@@ -64,4 +64,38 @@ pub mod universal_nft {
     ) -> Result<()> {
         complete_cross_chain_transfer::handler(ctx, transfer_id)
     }
+
+    /// Called by ZetaChain gateway when receiving cross-chain NFT transfer
+    pub fn on_call(
+        ctx: Context<OnCall>,
+        amount: u64,
+        sender: [u8; 20],
+        data: Vec<u8>,
+        bump: u8,
+    ) -> Result<()> {
+        on_call::handler(ctx, amount, sender, data, bump)
+    }
+
+    /// Called by ZetaChain gateway when cross-chain transfer fails
+    pub fn on_revert(
+        ctx: Context<OnRevert>,
+        amount: u64,
+        sender: Pubkey,
+        data: Vec<u8>,
+        transfer_id: String,
+    ) -> Result<()> {
+        on_revert::handler(ctx, amount, sender, data, transfer_id)
+    }
+
+    /// Initiate cross-chain transfer via ZetaChain gateway
+    pub fn deposit_and_call(
+        ctx: Context<DepositAndCall>,
+        transfer_id: String,
+        destination_chain_id: u64,
+        destination_recipient: [u8; 20],
+        revert_options: Option<gateway::RevertOptions>,
+        bump: u8,
+    ) -> Result<()> {
+        deposit_and_call::handler(ctx, transfer_id, destination_chain_id, destination_recipient, revert_options, bump)
+    }
 }

@@ -15,6 +15,7 @@ pub const ZETACHAIN_CHAIN_ID: u64 = 7000;
 pub const ETHEREUM_CHAIN_ID: u64 = 1;
 pub const BSC_CHAIN_ID: u64 = 56;
 pub const POLYGON_CHAIN_ID: u64 = 137;
+pub const SOLANA_CHAIN_ID: u64 = 900; // Solana testnet chain ID
 
 /// Cross-chain message types
 pub const MSG_TYPE_MINT: u8 = 1;
