@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": [
+      "dom",
+      "es2020"
+    ],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "strict": true,
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "./*"
+      ]
+    },
+    "allowJs": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "./**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

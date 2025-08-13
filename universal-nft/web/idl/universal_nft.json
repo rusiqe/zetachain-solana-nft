@@ -1,0 +1,40 @@
+{
+  "address": "73ce2AD3AZpaGFNcdavnbKbhNGSmz3PNyv2GCDM3Yy3c",
+  "metadata": {
+    "name": "universal_nft",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {"name":"complete_cross_chain_transfer","docs":["Complete a cross-chain transfer by burning the NFT"],"discriminator":[233,56,100,0,255,227,232,65],"accounts":[{"name":"global_config","pda":{"seeds":[{"kind":"const","value":[103,108,111,98,97,108,95,99,111,110,102,105,103]}]}},{"name":"universal_nft","writable":true,"pda":{"seeds":[{"kind":"const","value":[117,110,105,118,101,114,115,97,108,95,110,102,116]},{"kind":"account","path":"nft_mint"}]}},{"name":"cross_chain_transfer","writable":true,"pda":{"seeds":[{"kind":"const","value":[99,114,111,115,115,95,99,104,97,105,110,95,116,114,97,110,115,102,101,114]},{"kind":"arg","path":"transfer_id"}]}},{"name":"nft_mint","writable":true},{"name":"owner_token_account","writable":true},{"name":"collection_authority","signer":true},{"name":"zetachain_gateway","signer":true},{"name":"token_program","address":"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"}],"args":[{"name":"transfer_id","type":"string"}]},
+    {"name":"deposit_and_call","docs":["Initiate outbound transfer via ZetaChain gateway (demo)"]},
+    {"name":"on_call","docs":["Gateway callback to receive NFT on Solana (demo)"]},
+    {"name":"on_revert","docs":["Gateway callback for failed transfer (demo)"]},
+    {"name":"confirm_cross_chain_transfer","docs":["Confirm a cross-chain transfer (called by ZetaChain gateway)"],"discriminator":[226,26,32,150,192,181,199,211],"accounts":[{"name":"global_config","pda":{"seeds":[{"kind":"const","value":[103,108,111,98,97,108,95,99,111,110,102,105,103]}]}},{"name":"cross_chain_transfer","writable":true,"pda":{"seeds":[{"kind":"const","value":[99,114,111,115,115,95,99,104,97,105,110,95,116,114,97,110,115,102,101,114]},{"kind":"arg","path":"transfer_id"}]}},{"name":"zetachain_gateway","signer":true}],"args":[{"name":"transfer_id","type":"string"}]},
+    {"name":"initialize","docs":["Initialize the global configuration for the universal NFT program"],"discriminator":[175,175,109,31,13,152,155,237],"accounts":[{"name":"global_config","writable":true,"pda":{"seeds":[{"kind":"const","value":[103,108,111,98,97,108,95,99,111,110,102,105,103]}]}},{"name":"authority","writable":true,"signer":true},{"name":"zetachain_gateway"},{"name":"collection_authority"},{"name":"fee_recipient"},{"name":"system_program","address":"11111111111111111111111111111111"}],"args":[{"name":"bump","type":"u8"},{"name":"cross_chain_fee","type":{"option":"u64"}}]},
+    {"name":"initiate_cross_chain_transfer","docs":["Initiate a cross-chain transfer of an NFT"],"discriminator":[137,50,17,128,147,41,7,198],"accounts":[{"name":"global_config","pda":{"seeds":[{"kind":"const","value":[103,108,111,98,97,108,95,99,111,110,102,105,103]}]}},{"name":"universal_nft","writable":true,"pda":{"seeds":[{"kind":"const","value":[117,110,105,118,101,114,115,97,108,95,110,102,116]},{"kind":"account","path":"nft_mint"}]}},{"name":"cross_chain_transfer","writable":true,"pda":{"seeds":[{"kind":"const","value":[99,114,111,115,115,95,99,104,97,105,110,95,116,114,97,110,115,102,101,114]},{"kind":"arg","path":"transfer_id"}]}},{"name":"nft_mint"},{"name":"owner_token_account","writable":true},{"name":"owner","writable":true,"signer":true},{"name":"payer","writable":true,"signer":true},{"name":"zetachain_gateway"},{"name":"token_program","address":"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"},{"name":"system_program","address":"11111111111111111111111111111111"}],"args":[{"name":"transfer_id","type":"string"},{"name":"destination_chain","type":"string"},{"name":"destination_recipient","type":"string"},{"name":"bump","type":"u8"}]},
+    {"name":"mint_nft","docs":["Mint a new universal NFT with cross-chain metadata"],"discriminator":[211,57,6,167,15,219,35,251],"accounts":[{"name":"global_config","pda":{"seeds":[{"kind":"const","value":[103,108,111,98,97,108,95,99,111,110,102,105,103]}]}},{"name":"universal_nft","writable":true,"pda":{"seeds":[{"kind":"const","value":[117,110,105,118,101,114,115,97,108,95,110,102,116]},{"kind":"account","path":"mint"}]}},{"name":"mint","writable":true,"signer":true},{"name":"token_account","writable":true,"pda":{"seeds":[{"kind":"account","path":"recipient"},{"kind":"const","value":[6,221,246,225,215,101,161,147,217,203,225,70,206,235,121,172,28,180,133,237,95,91,55,145,58,140,245,133,126,255,0,169]},{"kind":"account","path":"mint"}],"program":{"kind":"const","value":[140,151,37,143,78,36,137,241,187,61,16,41,20,142,13,131,11,90,19,153,218,255,16,132,4,142,123,216,219,233,248,89]}}},{"name":"payer","writable":true,"signer":true},{"name":"recipient","docs":["The recipient of the NFT"]},{"name":"collection_authority","docs":["Collection authority (must match global config)"],"signer":true},{"name":"token_program","address":"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"},{"name":"associated_token_program","address":"ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"},{"name":"system_program","address":"11111111111111111111111111111111"}],"args":[{"name":"bump","type":"u8"},{"name":"name","type":"string"},{"name":"symbol","type":"string"},{"name":"uri","type":"string"},{"name":"original_chain","type":"string"},{"name":"original_contract","type":"string"},{"name":"original_token_id","type":"string"}]}
+  ],
+  "accounts": [
+    {"name":"CrossChainTransfer","discriminator":[75,206,207,67,38,212,216,18]},
+    {"name":"GlobalConfig","discriminator":[149,8,156,202,160,252,176,217]},
+    {"name":"UniversalNft","discriminator":[2,33,61,32,213,74,11,232]}
+  ],
+  "errors": [
+    {"code":6000,"name":"InsufficientFunds","msg":"Insufficient funds for cross-chain operation"},
+    {"code":6001,"name":"NftLocked","msg":"NFT is currently locked for cross-chain transfer"},
+    {"code":6002,"name":"InvalidChainId","msg":"Invalid chain ID specified"},
+    {"code":6003,"name":"Unauthorized","msg":"Unauthorized operation"},
+    {"code":6004,"name":"InvalidMetadataUri","msg":"Invalid metadata URI"},
+    {"code":6005,"name":"TransferAlreadyExists","msg":"Cross-chain transfer already exists"},
+    {"code":6006,"name":"TransferNotFound","msg":"Cross-chain transfer not found"},
+    {"code":6007,"name":"InvalidTransferStatus","msg":"Invalid transfer status"},
+    {"code":6008,"name":"GatewayNotConfigured","msg":"ZetaChain gateway not configured"},
+    {"code":6009,"name":"ComputeBudgetExceeded","msg":"Compute budget exceeded"},
+    {"code":6010,"name":"InvalidDestinationAddress","msg":"Invalid destination address format"},
+    {"code":6011,"name":"MintFailed","msg":"NFT mint failed"},
+    {"code":6012,"name":"InvalidOriginalChain","msg":"Invalid original chain data"},
+    {"code":6013,"name":"TransferTimeout","msg":"Transfer confirmation timeout"}
+  ]
+}
