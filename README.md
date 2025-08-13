@@ -101,7 +101,7 @@ Comprehensive error codes for various failure scenarios:
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/rusiqe/zetachain-solana-nft
 cd zetachain-solana-nft/universal-nft
 
 # Install dependencies
